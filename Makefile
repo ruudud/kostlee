@@ -1,11 +1,20 @@
-.PHONY: all install dependencies docker aufs stack
+.PHONY: all install dependencies docker dockerdep aufs stack
 
 all:
-		# Type `sudo make install` to install.
+		# Install leiningen with `make install`.
+		#
+		# Type `sudo make docker` to install containers and dependencies.
 		# Optional: `sudo usermod -aG docker <your_username>` to run docker commands without sudo.
 		# Then you can run `docker run -d -e PORT=5000 -p 5000 ruudud/kostlee`
 
-install: dependencies stack app
+install: lein
+
+lein:
+	wget https://raw.github.com/technomancy/leiningen/stable/bin/lein
+	chmod u+x lein
+	./lein -v
+
+docker: dependencies stack app
 
 app:
 	@docker build -t ruudud/kostlee .
@@ -14,9 +23,9 @@ stack:
 	@docker images | grep ruudud/leiningen || docker build -t ruudud/leiningen contrib/leiningen
 	@docker images | grep ruudud/uberjar || docker build -t ruudud/uberjar contrib/uberjar
 
-dependencies: docker
+dependencies: dockerdep
 
-docker: aufs
+dockerdep: aufs
 	egrep -i "^docker" /etc/group || groupadd docker
 	curl https://get.docker.io/gpg | apt-key add -
 	echo deb http://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list
