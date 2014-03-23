@@ -17,11 +17,11 @@
 
 
 ;;; TODO Read in from somewhere™ at startup
-(def daymoney-state (atom [
-  {:id "1" :date "2014-01-27" :people 16 :amount 2609.13M}
-  {:id "2" :date "2014-01-28" :people 16 :amount 2609.13M}
-  {:id "3" :date "2014-01-29" :people 16 :amount 2709.13M}
-  {:id "4" :date "2014-01-30" :people 17 :amount 2739.13M}]))
+(def daymoney-state (atom {
+  "1" { :date "2014-01-27T21:19:37+0100" :people 16 :amount 2209.13M }
+  "2" { :date "2014-01-28T21:19:37+0100" :people 16 :amount 2459.13M }
+  "3" { :date "2014-01-29T21:19:37+0100" :people 16 :amount 2709.13M }
+  "4" { :date "2014-01-30T21:19:37+0100" :people 17 :amount 2989M }}))
 
 ;;; API index provides links to resources
 (defn index []
@@ -29,27 +29,28 @@
 
 ;;; Daymoney handlers
 (defn get-all-daymoneys []
-  (response @daymoney-state))
+  (response (map (fn [d] (assoc (second d) :id (first d)))
+                 @daymoney-state)))
 
 (defn get-daymoney [id]
-  (let [daymoney (get (group-by :id @daymoney-state) id)]
+  (let [daymoney (get @daymoney-state id)]
     (cond
-      (empty? daymoney) {:status 404}
-      :else (response (first daymoney)))))
+      (empty? daymoney) { :status 404 }
+      :else (response (assoc daymoney :id id)))))
 
 ;TODO validate input
 (defn create-new-daymoney [daymoney]
   (let [id (uuid)]
-    (swap! daymoney-state conj (assoc daymoney :id id))
+    (reset! daymoney-state (merge @daymoney-state { id daymoney }))
     (get-daymoney id)))
 
 ;FIXME not implemented
 (defn update-daymoney [id daymoney]
-  (get-daymoney id))
+  {:status 501})
 
 ;FIXME not implemented
 (defn delete-daymoney [id]
-  {:status 204})
+  {:status 501})
 
 
 (defroutes api-routes
