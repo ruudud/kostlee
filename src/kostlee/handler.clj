@@ -8,6 +8,14 @@
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
+(defn allow-cross-origin
+  "middleware function to allow crosss origin"
+  [handler]
+  (fn [request]
+   (let [response (handler request)]
+    (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
+
+
 ;;; TODO Read in from somewhere™ at startup
 (def daymoney-state (atom [
   {:id "1" :date "2014-01-27" :people 16 :amount 2609.13M}
@@ -58,4 +66,5 @@
 (def app
   (-> (handler/api api-routes)
     (middleware/wrap-json-body)
-    (middleware/wrap-json-response)))
+    (middleware/wrap-json-response)
+    (allow-cross-origin)))
