@@ -1,10 +1,15 @@
 ;;;; Main entry point for the Kostlee web server
-(ns kostlee.handler
+(ns kostlee.core
   (:use compojure.core)
+  (:use clojure.pprint)
   (:use ring.util.response)
   (:require [compojure.handler :as handler]
             [ring.middleware.json :as middleware]
+            [clojure.data.csv :as csv]
+            [clojure.java.io :as io]
             [compojure.route :as route]))
+
+(def DATA-FILE "/srv/leemoney.dat")
 
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
@@ -16,12 +21,28 @@
     (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
 
 
-;;; TODO Read in from somewhere™ at startup
 (def daymoney-state (atom {
   "1" { :date "2014-01-27T21:19:37+0100" :people 16 :amount 2209.13M }
   "2" { :date "2014-01-28T21:19:37+0100" :people 16 :amount 2459.13M }
   "3" { :date "2014-01-29T21:19:37+0100" :people 16 :amount 2709.13M }
   "4" { :date "2014-01-30T21:19:37+0100" :people 17 :amount 2989M }}))
+
+(defn- read-csv [data-file]
+  (with-open [in-file (io/reader data-file)]
+    (doall
+      (csv/read-csv in-file))))
+
+(defn read-data-from-csv []
+  (reset! daymoney-state
+    (apply conj (map (fn [o] { (uuid) o })
+                     (map
+                       (fn [m] (zipmap [:date :amount :people] m))
+                       (read-csv DATA-FILE))))))
+
+(defn report-data-stats []
+  (println (clojure.string/join " " [ "Read in"
+                                     (count @daymoney-state)
+                                     "items from CSV…" ])))
 
 ;;; API index provides links to resources
 (defn index []
@@ -64,8 +85,14 @@
       (DELETE "/" [] (delete-daymoney id))))
   (route/not-found "Not Found"))
 
-(def app
+(def handler
   (-> (handler/api api-routes)
     (middleware/wrap-json-body)
     (middleware/wrap-json-response)
     (allow-cross-origin)))
+
+(defn init
+  "Executed on startup."
+  []
+  (read-data-from-csv)
+  (report-data-stats))

@@ -8,7 +8,8 @@
                  [ring/ring-json "0.3.0"]
                  [compojure "1.1.6"]]
   :plugins [[lein-ring "0.8.10"]]
-  :ring {:handler kostlee.handler/app}
+  :ring {:init kostlee.core/init
+         :handler kostlee.core/handler}
   :profiles {:dev {:dependencies [[ring-mock "0.1.5"]]}
              :uberjar {:aot :all}})
 
