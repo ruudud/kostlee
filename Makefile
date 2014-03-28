@@ -5,6 +5,7 @@ all:
 		#
 		# Type `sudo make docker` to install containers and dependencies.
 		# Optional: `sudo usermod -aG docker <your_username>` to run docker commands without sudo.
+		# If you already have Docker installed, run `make app`.
 		# Then you can run `docker run -d -e PORT=5000 -p 5000 ruudud/kostlee`
 
 install: lein
@@ -14,12 +15,12 @@ lein:
 	chmod u+x lein
 	./lein -v
 
-docker: dependencies stack app
+docker: dependencies app
 
-app:
+app: stack
 	@docker build -t ruudud/kostlee .
 
-stack: 
+stack:
 	@docker images | grep ruudud/leiningen || docker build -t ruudud/leiningen contrib/leiningen
 	@docker images | grep ruudud/uberjar || docker build -t ruudud/uberjar contrib/uberjar
 

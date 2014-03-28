@@ -14,44 +14,50 @@
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 
 (defn allow-cross-origin
-  "middleware function to allow crosss origin"
+  "middleware function to allow cross origin requests"
   [handler]
   (fn [request]
    (let [response (handler request)]
     (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
 
 
-(def daymoney-state (atom {
-  "1" { :date "2014-01-27T21:19:37+0100" :people 16 :amount 2209.13M }
-  "2" { :date "2014-01-28T21:19:37+0100" :people 16 :amount 2459.13M }
-  "3" { :date "2014-01-29T21:19:37+0100" :people 16 :amount 2709.13M }
-  "4" { :date "2014-01-30T21:19:37+0100" :people 17 :amount 2989M }}))
+(def daymoney-state
+  "Global state to keep the data"
+  (atom {
+    "1" { :date "2014-01-31T21:19:37+0100" :people 18 :amount 3989M }
+    "4" { :date "2014-01-28T21:19:37+0100" :people 16 :amount 1989M }
+    "0" { :date "2014-01-30T21:19:37+0100" :people 17 :amount 2989M }}))
 
 (defn- read-csv [data-file]
   (with-open [in-file (io/reader data-file)]
     (doall
       (csv/read-csv in-file))))
 
-(defn read-data-from-csv []
+(defn read-data-from-csv
+  "Read in data from given CSV file path"
+  [data-file]
   (reset! daymoney-state
     (apply conj (map (fn [o] { (uuid) o })
                      (map
                        (fn [m] (zipmap [:date :amount :people] m))
-                       (read-csv DATA-FILE))))))
+                       (read-csv data-file))))))
 
-(defn report-data-stats []
-  (println (clojure.string/join " " [ "Read in"
+(defn report-data-stats
+  "Print out some stats on the data read in"
+  []
+  (println (clojure.string/join " " ["Read in"
                                      (count @daymoney-state)
-                                     "items from CSV…" ])))
+                                     "items from CSV…"])))
 
-;;; API index provides links to resources
-(defn index []
+(defn index 
+  "API index provides links to resources"
+  []
   (response {:links {:daymoneys "/daymoneys"}}))
 
 ;;; Daymoney handlers
 (defn get-all-daymoneys []
-  (response (map (fn [d] (assoc (second d) :id (first d)))
-                 @daymoney-state)))
+  (response (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
+                      @daymoney-state))))
 
 (defn get-daymoney [id]
   (let [daymoney (get @daymoney-state id)]
@@ -94,5 +100,5 @@
 (defn init
   "Executed on startup."
   []
-  (read-data-from-csv)
+  (read-data-from-csv DATA-FILE)
   (report-data-stats))
