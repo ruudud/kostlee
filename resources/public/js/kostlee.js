@@ -1,4 +1,4 @@
-var KOSTLEE_API_URL = 'http://localhost:3000/daymoneys';
+var KOSTLEE_API_URL = '/daymoneys';
 
 var renderGraph = function(data, $el, name, color) {
   var _createYAxisEl = function($sibling) {
@@ -33,7 +33,6 @@ var renderGraph = function(data, $el, name, color) {
   return graph;
 };
 var renderPeopleSummary = function(numberOfPeople) {
-  console.log('num', numberOfPeople);
   var $el = document.getElementById('summary-people');
   var $man = document.createElement('span');
   $man.className = 'icon-man';
