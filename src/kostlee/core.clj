@@ -5,6 +5,7 @@
   (:use ring.util.response)
   (:require [compojure.handler :as handler]
             [ring.middleware.json :as middleware]
+            [ring.util.response :as resp]
             [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [compojure.route :as route]))
@@ -49,11 +50,6 @@
                                      (count @daymoney-state)
                                      "items from CSV…"])))
 
-(defn index 
-  "API index provides links to resources"
-  []
-  (response {:links {:daymoneys "/daymoneys"}}))
-
 ;;; Daymoney handlers
 (defn get-all-daymoneys []
   (response (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
@@ -81,7 +77,7 @@
 
 
 (defroutes api-routes
-  (GET "/" [] (index))
+  (GET "/" [] (resp/resource-response "index.html" {:root "public"}))
   (context "/daymoneys" []
     (GET "/" [] (get-all-daymoneys))
     (POST "/" {body :body} (create-new-daymoney body))
@@ -89,6 +85,7 @@
       (GET    "/" [] (get-daymoney id))
       (PUT    "/" {body :body} (update-daymoney id body))
       (DELETE "/" [] (delete-daymoney id))))
+  (route/resources "/")
   (route/not-found "Not Found"))
 
 (def handler

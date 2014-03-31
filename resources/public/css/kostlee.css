@@ -1,0 +1,48 @@
+body {
+  font-family: sans-serif;
+}
+
+/** Rickshaw override **/
+.rickshaw_graph .detail .x_label {
+  border: none;
+}
+
+/** Graphs **/
+.graph-container {
+  position: relative;
+  width: 630px;
+}
+.graph-container:after {
+  content: ' ';
+  display: table;
+  clear: both;
+}
+
+.legend {
+  display: inline-block;
+  position: relative;
+  left: 8px;
+}
+.legend-container {
+  position: absolute;
+  right: 0;
+  bottom: 26px;
+  width: 0;
+}
+
+.leftAxisY {
+  float: left;
+  width: 40px;
+  max-height: 250px;
+}
+.rightAxisY {
+  float: left;
+  width: 30px;
+  max-height: 250px;
+}
+.graph {
+  float: left;
+  width: 600px;
+  display: inline-block;
+}
+
