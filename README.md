@@ -9,13 +9,12 @@ your `$PATH`.
 
 
 ## Developing
-`lein ring server [ PORT ]` starts a web server that reloads whenever files
-change.
+`lein run` compiles the code and starts up the web server.
 
 
 ## Lein Build
-Running `lein ring uberjar` will create a JAR file with the app running
-using an embedded Jetty.
+Running `lein uberjar` will create a JAR file with the app running using an
+embedded Jetty.
 
 The resulting JAR can be run fairly straight forward:
 
