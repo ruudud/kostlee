@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eo pipefail
-set -x
+#set -x
 
 port=3000
 docker_opts="-v /srv:/srv:ro -p $port"
