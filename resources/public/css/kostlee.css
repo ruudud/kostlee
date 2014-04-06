@@ -7,11 +7,6 @@ body {
   padding-top: 1rem;
 }
 
-/** Rickshaw override **/
-.rickshaw_graph .detail .x_label {
-  border: none;
-}
-
 /** Utils **/
 .cf:after {
   content: ' ';
@@ -45,6 +40,17 @@ body {
   width: 230px;
 }
 
+/** Graphs **/
+.graph {
+  /* float: left; */
+/*   width: 600px; */
+  /* display: inline-block; */
+  min-height: 300px;
+}
+.graph svg {
+  width: 100% !important;
+}
+
 /** Icons **/
 .icon-man {
   width: 16px;
@@ -54,33 +60,4 @@ body {
 .icon-moneybag {
   width: 100px;
   height: 100px;
-}
-
-/** Graphs **/
-.legend {
-  display: inline-block;
-  position: relative;
-  left: 8px;
-}
-.legend-container {
-  position: absolute;
-  right: 0;
-  bottom: 26px;
-  width: 0;
-}
-
-.leftAxisY {
-  float: left;
-  width: 40px;
-  max-height: 250px;
-}
-.rightAxisY {
-  float: left;
-  width: 30px;
-  max-height: 250px;
-}
-.graph {
-  float: left;
-  width: 600px;
-  display: inline-block;
 }

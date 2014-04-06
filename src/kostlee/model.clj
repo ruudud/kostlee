@@ -15,6 +15,13 @@
     (doall
       (csv/read-csv in-file))))
 
+(defn- parseRow
+  "Apply data types to read in row"
+  [r]
+  [(r 0)
+   (bigdec (r 1))
+   (Integer/parseInt (r 2))])
+
 (defn- report-data-stats
   "Print out some stats on the data read in"
   []
@@ -27,7 +34,8 @@
   (reset! daymoney-state
     (apply conj (map (fn [o] { (uuid) o })
                      (map
-                       (fn [m] (zipmap [:date :amount :people] m))
+                       (fn [m] (zipmap [:date :amount :people] 
+                                       (parseRow m)))
                        (read-csv data-file)))))
   (report-data-stats))
 
