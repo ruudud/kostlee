@@ -36,8 +36,10 @@ redis-cli ltrim "frontend:$vhost" 0 1
 
 logger "$(date --iso-8601=seconds) - New back-end activated."
 
-logger "$(date --iso-8601=seconds) - Removing $old_container_ids..."
-echo $old_container_ids | xargs docker stop
-echo $old_container_ids | xargs docker rm
+if [[ ! -z "$old_container_ids" ]]; then
+  logger "$(date --iso-8601=seconds) - Removing $old_container_ids..."
+  echo $old_container_ids | xargs docker stop
+  echo $old_container_ids | xargs docker rm
+fi
 
 logger "$(date --iso-8601=seconds) - Finished redeploying '$name' for $vhost."
