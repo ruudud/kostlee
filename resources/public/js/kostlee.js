@@ -32,12 +32,24 @@ var renderGraph = function(data, $el, name, color) {
   graph.render();
   return graph;
 };
+
+var renderMoneySummary = function(amountOfMoney) {
+  var $container = document.getElementById('summary-money');
+  var $fact = $container.querySelector('.fact');
+  $fact.textContent = amountOfMoney;
+};
 var renderPeopleSummary = function(numberOfPeople) {
-  var $el = document.getElementById('summary-people');
-  var $man = document.createElement('span');
+  var $container = document.getElementById('summary-people');
+  var $fact = $container.querySelector('.fact');
+  var $factContent = $container.querySelector('.factContent');
+
+  $fact.textContent = numberOfPeople;
+  
+  var $man = document.createElement('img');
+  $man.src = 'gfx/man.svg';
   $man.className = 'icon-man';
   for (var i = 0; i<numberOfPeople; i++) {
-    $el.appendChild($man.cloneNode());
+    $factContent.appendChild($man.cloneNode());
   }
 };
 
@@ -52,9 +64,10 @@ var graphAmountOfMoney = function(data) {
 };
 var renderSummary = function(data) {
   var people = data[1][data[1].length - 1].y;
-  var share = data[0][data[0].length - 1].y;
+  var money = data[0][data[0].length - 1].y;
   
   renderPeopleSummary(people);
+  renderMoneySummary(money);
   return data;
 };
 

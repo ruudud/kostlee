@@ -3,25 +3,34 @@
 
 <head>
   <title>KostLee</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/bootstrap.css">
   <link rel="stylesheet" href="css/rickshaw.min.css">
   <link rel="stylesheet" href="css/kostlee.css">
 </head>
 
 <body>
-  <section>
-    <section id="summary-people"></section>
+  <section class="container cf">
+    <div class="row">
+      <article id="summary-money" class="smallFact col-xs-12 col-sm-6 col-md-4 col-md-offset-2">
+        <span class="fact"></span>
+        <span class="factContent">
+          <img class="icon-moneybag" src="gfx/moneybag.svg">
+        </span>
+      </article>
+      <article id="summary-people" class="smallFact col-xs-12 col-sm-6 col-md-4">
+        <span class="fact"></span>
+        <span class="factContent"></span>
+      </article>
+    </div>
   </section>
-  <section>
+  <section class="container cf">
     <h2>Antall givere over tid</h2>
-    <div class="graph-container">
-      <div id="graph-numberOfPeople" class="graph"></div>
-    </div>
+    <div id="graph-numberOfPeople" class="graph"></div>
   </section>
-  <section>
+  <section class="container cf">
     <h2>Grasrotandel over tid</h2>
-    <div class="graph-container">
-      <div id="graph-amountOfMoney" class="graph"></div>
-    </div>
+    <div id="graph-amountOfMoney" class="graph"></div>
   </section>
 
   <script>

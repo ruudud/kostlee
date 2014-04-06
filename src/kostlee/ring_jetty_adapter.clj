@@ -23,7 +23,7 @@
   (.setHandler server (doto (new HandlerCollection)
                         (.addHandler (doto (new GzipHandler)
                                        (.setHandler (proxy-handler ring-handler))
-                                       (.setMimeTypes "text/html,text/plain,text/xml,text/css,application/javascript,text/javascript,application/json")))
+                                       (.setMimeTypes "text/html,text/plain,text/xml,text/css,application/javascript,text/javascript,application/json,image/svg+xml")))
                         (.addHandler (doto (new RequestLogHandler) (.setRequestLog (NCSARequestLog.)))))))
 
 (defn- create-server
