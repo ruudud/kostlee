@@ -2,6 +2,7 @@
 (ns kostlee.core
   (:gen-class)
   (:use compojure.core)
+  (:use ring.middleware.keyword-params)
   (:require [kostlee [ring-jetty-adapter :as jetty]
                      [model :as model]
                      [handlers :as handlers]]
@@ -20,7 +21,7 @@
 (defroutes api-routes
   (GET "/" [] (resp/resource-response "index.html" {:root "public"}))
   (context "/daymoneys" []
-    (GET "/" [] (handlers/get-all-daymoneys))
+    (GET "/" {params :params} (handlers/get-all-daymoneys params))
     (POST "/" {body :body} (handlers/create-new-daymoney body))
     (context "/:id" [id]
       (GET    "/" [] (handlers/get-daymoney id))
@@ -32,6 +33,7 @@
 (def app (-> (handler/api api-routes)
              (middleware/wrap-json-body)
              (middleware/wrap-json-response)
+             (wrap-keyword-params)
              (allow-cross-origin)))
 
 (defn init "Executed on startup." []

@@ -6,6 +6,7 @@
             :url "http://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/data.csv "0.1.2"]
+                 [clj-time "0.6.0"]
                  [ring/ring-json "0.3.0"]
                  [ring "1.2.2"]
                  [compojure "1.1.6"]]

@@ -58,6 +58,24 @@ var formatData = function(data) {
   });
 };
 
+var graphWeekdays = function(data) {
+  var valueFormatter = function() {
+    return '';
+  };
+  var graph = new Morris.Donut({
+    element: 'graph-dayOfWeek',
+    data: data,
+    formatter: valueFormatter
+  });
+};
+var formatWeekdayData = function(data) {
+  var dowMap = ['Mandag', 'Tirsdag', 'Onsdag', 
+    'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
+  return data.map(function(dowValue, i) {
+    return { label: dowMap[i], value: dowValue};
+  });
+};
+
 var errorHandler = function(error) {
   console.error("Error when graphing data", error);
 };
@@ -66,4 +84,9 @@ xhr.getJSON(KOSTLEE_API_URL)
    .then(formatData)
    .then(renderSummary)
    .then(graphHistoricData)
+   .catch(errorHandler);
+
+xhr.getJSON(KOSTLEE_API_URL + '?weekday=1')
+   .then(formatWeekdayData)
+   .then(graphWeekdays)
    .catch(errorHandler);

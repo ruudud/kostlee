@@ -1,12 +1,32 @@
+;;;; Handlers for the API endpoints
 (ns kostlee.handlers
   (:use [kostlee.uuid]
         [kostlee.model :only [daymoney-state]]
-        [ring.util.response]))
+        [ring.util.response])
+  (:require [clj-time.format :as f]
+            [clj-time.core :as t]))
 
-;;; Daymoney handlers
-(defn get-all-daymoneys []
+(defn- all-daymoneys []
   (response (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
                       @daymoney-state))))
+
+;; FIXME The numbers returned by this fn are bullshit. Need the diff from
+;; the day before.
+(defn- daymoneys-per-weekday []
+  (let [dow-group (map
+              (fn [dow] (map (fn [d] (second d))
+                             (second dow)))
+              (group-by (fn [d] (t/day-of-week (f/parse ((second d) :date))))
+                        @daymoney-state))]
+    (response (map
+                (fn [dow] (reduce + (map (fn [d] (d :amount)) dow)))
+                dow-group))))
+
+
+(defn get-all-daymoneys [params]
+  (if (= (params :weekday) "1")
+   (daymoneys-per-weekday)
+   (all-daymoneys)))
 
 (defn get-daymoney [id]
   (let [daymoney (get @daymoney-state id)]
