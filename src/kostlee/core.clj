@@ -38,7 +38,7 @@
 
 (defn init "Executed on startup." []
   (model/read-data-from-csv (or (System/getenv "DATAFILE")
-                                "/srv/leemoney.dat")))
+                                "/srv/leemoney.csv")))
 
 (defn -main [& args]
   (init)

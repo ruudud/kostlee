@@ -59,8 +59,8 @@ var formatData = function(data) {
 };
 
 var graphWeekdays = function(data) {
-  var valueFormatter = function() {
-    return '';
+  var valueFormatter = function(y) {
+    return y + '%';
   };
   var graph = new Morris.Donut({
     element: 'graph-dayOfWeek',
@@ -71,8 +71,12 @@ var graphWeekdays = function(data) {
 var formatWeekdayData = function(data) {
   var dowMap = ['Mandag', 'Tirsdag', 'Onsdag', 
     'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
+  var totalSum = data.reduce(function(memo, val) {
+    return memo + val;
+  }, 0);
   return data.map(function(dowValue, i) {
-    return { label: dowMap[i], value: dowValue};
+    var share = ((dowValue / totalSum) * 100).toFixed(2);
+    return { label: dowMap[i], value: share};
   });
 };
 

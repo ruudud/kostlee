@@ -8,10 +8,8 @@
 
 (defn- all-daymoneys []
   (response (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
-                      @daymoney-state))))
+                                @daymoney-state))))
 
-;; FIXME The numbers returned by this fn are bullshit. Need the diff from
-;; the day before.
 (defn- daymoneys-per-weekday []
   (let [dow-group (map
               (fn [dow] (map (fn [d] (second d))
@@ -19,7 +17,7 @@
               (group-by (fn [d] (t/day-of-week (f/parse ((second d) :date))))
                         @daymoney-state))]
     (response (map
-                (fn [dow] (reduce + (map (fn [d] (d :amount)) dow)))
+                (fn [dow] (reduce + (map (fn [d] (:increase d)) dow)))
                 dow-group))))
 
 
