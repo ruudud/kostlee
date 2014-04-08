@@ -29,7 +29,6 @@ var graphHistoricData = function(data) {
     element: 'graph-historic',
     data: data,
     xkey: 'date',
-    hideHover: true,
     resize: true,
     lineColors: ['#222', '#666'],
     ykeys: ['amountOfMoney', 'numberOfPeople'],
