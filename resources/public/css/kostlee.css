@@ -6,6 +6,13 @@ body {
   height: 100%;
   padding-top: 1rem;
 }
+footer {
+  padding: 1rem 0;
+}
+
+.bg-clouds {
+  background-color: #ecf0f1;
+}
 
 /** Utils **/
 .cf:after {
