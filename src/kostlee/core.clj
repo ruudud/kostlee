@@ -20,6 +20,7 @@
 
 (defroutes api-routes
   (GET "/" [] (resp/resource-response "index.html" {:root "public"}))
+  (GET "/status" [] {:status 200 :body "Yey Okay"})
   (context "/daymoneys" []
     (GET "/" {params :params} (handlers/get-all-daymoneys params))
     (POST "/" {body :body} (handlers/create-new-daymoney body))
