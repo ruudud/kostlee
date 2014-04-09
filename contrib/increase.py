@@ -13,7 +13,6 @@ def main():
     for row in reader:
         data.append(row)
         if len(data) == 1:
-            row.append(Decimal(0))
             continue
 
         prev = data[-2]
@@ -21,9 +20,14 @@ def main():
         prev_date = dateutil.parser.parse(prev[0]).date()
         if (prev_date + aday) == this_date:
             increase = Decimal(row[1]) - Decimal(prev[1])
-            row.append(increase)
+            prev.append(increase)
         else:
-            row.append(Decimal(0))
+            prev.append(Decimal(0))
+
+    if not len(data) > 0:
+      return
+
+    data[-1].append(Decimal(0))
 
     ofp = open('/srv/leemoney.csv', 'wb')
     writer = csv.writer(ofp, delimiter=',', quotechar='"',

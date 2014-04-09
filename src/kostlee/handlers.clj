@@ -10,15 +10,18 @@
   (response (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
                                 @daymoney-state))))
 
-(defn- daymoneys-per-weekday []
-  (let [dow-group (map
-              (fn [dow] (map (fn [d] (second d))
-                             (second dow)))
-              (group-by (fn [d] (t/day-of-week (f/parse ((second d) :date))))
-                        @daymoney-state))]
+(defn daymoneys-per-weekday []
+  (let [daymoneys-in-weekdays (group-by
+                                (fn [d] (t/day-of-week (f/parse ((second d) :date))))
+                                @daymoney-state)
+        sorted-in-weekdays (into (sorted-map) daymoneys-in-weekdays)
+        in-weekdays-sorted-list (map
+                                  (fn [dow] (map (fn [d] (second d))
+                                                 (second dow)))
+                                  sorted-in-weekdays)]
     (response (map
                 (fn [dow] (reduce + (map (fn [d] (:increase d)) dow)))
-                dow-group))))
+                in-weekdays-sorted-list))))
 
 
 (defn get-all-daymoneys [params]

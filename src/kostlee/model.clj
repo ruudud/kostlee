@@ -6,9 +6,14 @@
 (def daymoney-state
   "Global state keeping the data"
   (atom {
-    "1" { :date "2014-01-31T21:19:37+0100" :people 18 :amount 3989M :increase 1000M }
+    "8" { :date "2014-01-27T21:19:37+0100" :people 16 :amount 1989M :increase 1M }
     "4" { :date "2014-01-28T21:19:37+0100" :people 16 :amount 1989M :increase 0M }
-    "0" { :date "2014-01-30T21:19:37+0100" :people 17 :amount 2989M :increase 0M }}))
+    "9" { :date "2014-01-29T21:19:37+0100" :people 16 :amount 1989M :increase 10M }
+    "0" { :date "2014-01-30T21:19:37+0100" :people 17 :amount 2989M :increase 0M }
+    "1" { :date "2014-01-31T21:19:37+0100" :people 18 :amount 3989M :increase 1000M }
+    "2" { :date "2014-02-01T21:19:37+0100" :people 18 :amount 3989M :increase 10M }
+    "5" { :date "2014-02-02T21:19:37+0100" :people 18 :amount 3989M :increase 5M }
+    "3" { :date "2014-02-03T21:19:37+0100" :people 18 :amount 3989M :increase 0M }}))
 
 (defn- read-csv [data-file]
   (with-open [in-file (io/reader data-file)]
