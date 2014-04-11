@@ -1,36 +1,20 @@
 ;;;; Handlers for the API endpoints
 (ns kostlee.handlers
   (:use [kostlee.uuid]
-        [kostlee.model :only [daymoney-state]]
         [ring.util.response])
-  (:require [clj-time.format :as f]
-            [clj-time.core :as t]))
-
-(defn- all-daymoneys []
-  (response (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
-                                @daymoney-state))))
-
-(defn daymoneys-per-weekday []
-  (let [daymoneys-in-weekdays (group-by
-                                (fn [d] (t/day-of-week (f/parse ((second d) :date))))
-                                @daymoney-state)
-        sorted-in-weekdays (into (sorted-map) daymoneys-in-weekdays)
-        in-weekdays-sorted-list (map
-                                  (fn [dow] (map (fn [d] (second d))
-                                                 (second dow)))
-                                  sorted-in-weekdays)]
-    (response (map
-                (fn [dow] (reduce + (map (fn [d] (:increase d)) dow)))
-                in-weekdays-sorted-list))))
+  (:require [kostlee.model :as m]))
 
 
 (defn get-all-daymoneys [params]
-  (if (= (params :weekday) "1")
-   (daymoneys-per-weekday)
-   (all-daymoneys)))
+  (cond
+    (= (params :weekday) "1") (response (m/daymoneys-per-weekday))
+    (= (params :transform) "per-weekday") (response (m/daymoneys-per-weekday))
+    (= (params :transform) "avg") (response {:perDay (m/avg-daymoneys-per-day)
+                                             :perPeople (m/avg-daymoneys-per-people)})
+    :else (response (m/daymoneys-sorted))))
 
 (defn get-daymoney [id]
-  (let [daymoney (get @daymoney-state id)]
+  (let [daymoney (get @m/daymoney-state id)]
     (cond
       (empty? daymoney) { :status 404 }
       :else (response (assoc daymoney :id id)))))
@@ -38,7 +22,7 @@
 ;TODO validate input
 (defn create-new-daymoney [daymoney]
   (let [id (uuid)]
-    (reset! daymoney-state (merge @daymoney-state { id daymoney }))
+    (reset! m/daymoney-state (merge @m/daymoney-state { id daymoney }))
     (get-daymoney id)))
 
 ;FIXME not implemented

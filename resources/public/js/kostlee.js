@@ -1,16 +1,27 @@
 var KOSTLEE_API_URL = '/daymoneys';
 
+var $br = document.createElement('br');
+
 var renderMoneySummary = function(amountOfMoney) {
   var $container = document.getElementById('summary-money');
-  var $fact = $container.querySelector('.fact');
-  $fact.textContent = amountOfMoney;
+  var $fact = $container.querySelector('.fact h2');
+  var $desc = document.createElement('small');
+  $desc.textContent = 'Sum opptjent';
+
+  $fact.textContent = amountOfMoney + 'kr';
+  $fact.appendChild($br.cloneNode());
+  $fact.appendChild($desc);
 };
 var renderPeopleSummary = function(numberOfPeople) {
   var $container = document.getElementById('summary-people');
-  var $fact = $container.querySelector('.fact');
+  var $fact = $container.querySelector('.fact h2');
   var $factContent = $container.querySelector('.factContent');
+  var $desc = document.createElement('small');
+  $desc.textContent = 'Aktive givere';
 
   $fact.textContent = numberOfPeople;
+  $fact.appendChild($br.cloneNode());
+  $fact.appendChild($desc);
   
   var $man = document.createElement('img');
   $man.src = 'gfx/man.svg';
@@ -79,6 +90,13 @@ var formatWeekdayData = function(data) {
   });
 };
 
+var graphAvg = function(data) {
+  var $day = document.getElementById('avgPerDay');
+  var $people = document.getElementById('avgPerPeople');
+  $day.textContent = data.perDay.toFixed(2) + 'kr';
+  $people.textContent = data.perPeople.toFixed(2) + 'kr';
+};
+
 var errorHandler = function(error) {
   console.error("Error when graphing data", error);
 };
@@ -89,7 +107,11 @@ xhr.getJSON(KOSTLEE_API_URL)
    .then(graphHistoricData)
    .catch(errorHandler);
 
-xhr.getJSON(KOSTLEE_API_URL + '?weekday=1')
+xhr.getJSON(KOSTLEE_API_URL + '?transform=per-weekday')
    .then(formatWeekdayData)
    .then(graphWeekdays)
+   .catch(errorHandler);
+
+xhr.getJSON(KOSTLEE_API_URL + '?transform=avg')
+   .then(graphAvg)
    .catch(errorHandler);

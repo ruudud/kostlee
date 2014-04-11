@@ -15,6 +15,7 @@ footer {
   background-color: #222;
   color: #fff;
   padding: 3rem;
+  margin-bottom: 1rem;
 }
 .ctaGasroot {
   margin: 0 auto;
@@ -31,36 +32,45 @@ footer {
 }
 
 /** Facts **/
-.smallFact {
+.simpleFact {
   height: 100px;
-  position: relative;
   margin-bottom: 1rem;
 }
 .fact {
   font-size: 30px;
   height: 100%;
-  display: inline-block;
-  position: absolute;
-  width: 120px;
   line-height: 100px;
   text-align: right;
   border-right: 3px solid whitesmoke;
   padding-right: 10px;
+  float: left;
+}
+.fact-small {
+  width: 140px;
+}
+.fact-medium {
+  width: 240px;
 }
 .factContent {
   height: 100%;
   display: inline-block;
-  position: absolute;
-  left: 135px;
   padding-left: 10px;
   max-width: 230px;
+}
+.factContent .icon-man {
+  display: none;
+}
+.factContent .icon-man:nth-child(-n+6) {
+  display: inline-block;
+}
+@media (min-width: 768px) {
+  .factContent .icon-man {
+    display: inline-block;
+  }
 }
 
 /** Graphs **/
 .graph {
-  /* float: left; */
-/*   width: 600px; */
-  /* display: inline-block; */
   min-height: 300px;
 }
 .graph svg {

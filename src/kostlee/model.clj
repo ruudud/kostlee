@@ -1,7 +1,9 @@
 (ns kostlee.model
   (:use kostlee.uuid)
   (:require [clojure.java.io :as io]
-            [clojure.data.csv :as csv]))
+            [clojure.data.csv :as csv]
+            [clj-time.format :as f]
+            [clj-time.core :as t]))
 
 (def daymoney-state
   "Global state keeping the data"
@@ -14,6 +16,33 @@
     "2" { :date "2014-02-01T21:19:37+0100" :people 18 :amount 3989M :increase 10M }
     "5" { :date "2014-02-02T21:19:37+0100" :people 18 :amount 3989M :increase 5M }
     "3" { :date "2014-02-03T21:19:37+0100" :people 18 :amount 3989M :increase 0M }}))
+
+(defn daymoneys-sorted []
+  (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
+                                @daymoney-state)))
+
+(defn daymoneys-per-weekday []
+  (let [daymoneys-in-weekdays (group-by
+                                (fn [d] (t/day-of-week (f/parse (d :date))))
+                                (vals @daymoney-state))
+        sorted-in-weekdays (vals (into (sorted-map) daymoneys-in-weekdays))]
+    (map (fn [dow] (reduce + (map (fn [d] (:increase d)) dow)))
+         sorted-in-weekdays)))
+
+(defn avg-daymoneys-per-people []
+  (let [daymoneys (vals @daymoney-state)]
+    (reduce + (map (fn [d] (with-precision 10 (/ (d :increase) (d :people))))
+                   daymoneys))))
+
+(defn avg-daymoneys-per-day []
+  (let [daymoneys (sort-by :date (vals @daymoney-state))
+        first-daymoney (first daymoneys)
+        last-daymoney (last daymoneys)
+        sum-amount (- (last-daymoney :amount) 
+                      (first-daymoney :amount))
+        num-days (t/in-days (t/interval (f/parse (first-daymoney :date))
+                                        (f/parse (last-daymoney :date))))]
+    (with-precision 10 (/ sum-amount num-days))))
 
 (defn- read-csv [data-file]
   (with-open [in-file (io/reader data-file)]
