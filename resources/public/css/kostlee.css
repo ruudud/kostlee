@@ -4,21 +4,34 @@ html {
 }
 body {
   height: 100%;
-  padding-top: 1rem;
 }
 footer {
   padding: 2rem 0;
+}
+.page-header {
+  padding: 0.5rem 0;
+  margin-bottom: 2rem;
+}
+.page-logo {
+  width: 50px;
+  height: 50px;
+}
+h2.page-heading {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  margin-left: 1rem;
 }
 
 /** CTA **/
 .bg-clouds {
   background-color: #222;
   color: #fff;
-  padding: 3rem;
   margin-bottom: 1rem;
 }
 .ctaGasroot {
   margin: 0 auto;
+  padding: 3rem 0;
 }
 .ctaList li {
   list-style-type: square;
@@ -36,6 +49,7 @@ footer {
   height: 100px;
   margin-bottom: 1rem;
 }
+
 .fact {
   font-size: 30px;
   height: 100%;
@@ -50,6 +64,9 @@ footer {
 }
 .fact-medium {
   width: 240px;
+}
+.fact-medium + .factContent {
+  line-height: 100px;
 }
 .factContent {
   height: 100%;
@@ -86,4 +103,8 @@ footer {
 .icon-moneybag {
   width: 100px;
   height: 100px;
+}
+.icon-avg {
+  width: 80px;
+  height: 80px;
 }
