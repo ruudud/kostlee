@@ -18,6 +18,43 @@
    (let [response (handler request)]
     (assoc-in response [:headers "Access-Control-Allow-Origin"] "*"))))
 
+(defmacro redef
+  "Redefine an existing value, keeping the metadata intact."
+  [name value]
+  `(let [m# (meta #'~name)
+         v# (def ~name ~value)]
+     (alter-meta! v# merge m#)
+     v#))
+
+(defmacro decorate
+  "Wrap a function in one or more decorators."
+  [func & decorators]
+  `(redef ~func (-> ~func ~@decorators)))
+
+(defmacro decorate-with
+  "Wrap multiple functions in a single decorator."
+  [decorator & funcs]
+  `(do ~@(for [f funcs]
+          `(redef ~f (~decorator ~f)))))
+
+(defn- with-header [handler header value]
+  (fn [request]
+    (when-let [response (handler request)]
+      (assoc-in response [:headers header] value))))
+
+(defroutes css-vendor-resource-routes
+  (route/resources "/css/vendor" { :root "public/css/vendor" }))
+
+(defroutes js-vendor-resource-routes
+  (route/resources "/js/vendor" { :root "public/js/vendor/" }))
+
+(defroutes gfx-resource-routes
+  (route/resources "/gfx" { :root "public/gfx/" }))
+
+(decorate gfx-resource-routes (with-header "Cache-Control" "max-age=31536000"))
+(decorate js-vendor-resource-routes (with-header "Cache-Control" "max-age=31536000"))
+(decorate css-vendor-resource-routes (with-header "Cache-Control" "max-age=31536000"))
+
 (defroutes api-routes
   (GET "/" [] (resp/resource-response "index.html" {:root "public"}))
   (GET "/status" [] {:status 200 :body "Yey Okay"})
@@ -28,6 +65,9 @@
       (GET    "/" [] (handlers/get-daymoney id))
       (PUT    "/" {body :body} (handlers/update-daymoney id body))
       (DELETE "/" [] (handlers/delete-daymoney id))))
+  gfx-resource-routes
+  js-vendor-resource-routes
+  css-vendor-resource-routes
   (route/resources "/")
   (route/not-found "Not Found"))
 
