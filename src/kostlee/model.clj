@@ -17,9 +17,12 @@
     "5" { :date "2014-02-02T21:19:37+0100" :people 18 :amount 3989M :increase 5M }
     "3" { :date "2014-02-03T21:19:37+0100" :people 18 :amount 3989M :increase 0M }}))
 
+(defn daymoneys-list []
+  (map (fn [d] (assoc (second d) :id (first d)))
+       @daymoney-state))
+
 (defn daymoneys-sorted []
-  (sort-by :date (map (fn [d] (assoc (second d) :id (first d)))
-                                @daymoney-state)))
+  (sort-by :date (daymoneys-list)))
 
 (defn daymoneys-per-weekday []
   (let [daymoneys-in-weekdays (group-by
@@ -43,6 +46,16 @@
         num-days (t/in-days (t/interval (f/parse (first-daymoney :date))
                                         (f/parse (last-daymoney :date))))]
     (with-precision 10 (/ sum-amount num-days))))
+
+(defn max-daymoneys-per-day []
+  (apply max-key :increase (daymoneys-list)))
+
+(defn max-daymoneys-per-people []
+  (let [increases (map (fn [d] (assoc d 
+                         :increasePerPeople (with-precision 10 
+                                   (/ (d :increase) (d :people)))))
+                       (daymoneys-list))]
+    (apply max-key :increasePerPeople increases)))
 
 (defn- read-csv [data-file]
   (with-open [in-file (io/reader data-file)]

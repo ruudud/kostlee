@@ -11,6 +11,8 @@
     (= (params :transform) "per-weekday") (response (m/daymoneys-per-weekday))
     (= (params :transform) "avg") (response {:perDay (m/avg-daymoneys-per-day)
                                              :perPeople (m/avg-daymoneys-per-people)})
+    (= (params :transform) "max") (response {:perDay (m/max-daymoneys-per-day)
+                                             :perPeople (m/max-daymoneys-per-people)})
     :else (response (m/daymoneys-sorted))))
 
 (defn get-daymoney [id]

@@ -3,14 +3,8 @@ var KOSTLEE_API_URL = '/daymoneys';
 var $br = document.createElement('br');
 
 var renderMoneySummary = function(amountOfMoney) {
-  var $container = document.getElementById('summary-money');
-  var $fact = $container.querySelector('.fact h2');
-  var $desc = document.createElement('small');
-  $desc.textContent = 'Sum opptjent';
-
-  $fact.textContent = amountOfMoney + 'kr';
-  $fact.appendChild($br.cloneNode());
-  $fact.appendChild($desc);
+  var $fact = document.getElementById('summary-money');
+  $fact.textContent = amountOfMoney.toFixed(0) + 'kr';
 };
 var renderPeopleSummary = function(numberOfPeople) {
   var $container = document.getElementById('summary-people');
@@ -43,7 +37,7 @@ var graphHistoricData = function(data) {
     resize: true,
     lineColors: ['#222', '#666'],
     ykeys: ['amountOfMoney', 'numberOfPeople'],
-    labels: ['Opptjent beløp', 'Spillere'],
+    labels: ['Mottatt beløp', 'Spillere'],
     dateFormat: dateFormater
   });
 };
@@ -67,7 +61,6 @@ var formatData = function(data) {
      };
   });
 };
-
 var graphWeekdays = function(data) {
   var valueFormatter = function(y) {
     return y + '%';
@@ -89,12 +82,17 @@ var formatWeekdayData = function(data) {
     return { label: dowMap[i], value: share};
   });
 };
-
 var graphAvg = function(data) {
   var $day = document.getElementById('avgPerDay');
   var $people = document.getElementById('avgPerPeople');
-  $day.textContent = data.perDay.toFixed(2) + 'kr';
-  $people.textContent = data.perPeople.toFixed(2) + 'kr';
+  $day.textContent = data.perDay.toFixed(0) + 'kr';
+  $people.textContent = data.perPeople.toFixed(0) + 'kr';
+};
+var graphMax = function(data) {
+  var $day = document.getElementById('maxPerDay');
+  var $people = document.getElementById('maxPerPeople');
+  $day.textContent = data.perDay.increase.toFixed(0) + 'kr';
+  $people.textContent = data.perPeople.increasePerPeople.toFixed(0) + 'kr';
 };
 
 var errorHandler = function(error) {
@@ -114,4 +112,8 @@ xhr.getJSON(KOSTLEE_API_URL + '?transform=per-weekday')
 
 xhr.getJSON(KOSTLEE_API_URL + '?transform=avg')
    .then(graphAvg)
+   .catch(errorHandler);
+   
+xhr.getJSON(KOSTLEE_API_URL + '?transform=max')
+   .then(graphMax)
    .catch(errorHandler);
