@@ -34,8 +34,10 @@
     <div class="row">
       <article class="simpleFact col-xs-12 col-sm-5 col-md-5 col-md-offset-1">
         <div class="fact fact-small">
-          <h2><span id="summary-money">{{ daymoneyToday.amount|number-format:%.0f }}</span><br>
-          <small>Mottatt hittil</small></h2>
+          <h2>
+            <span id="summary-money">{{ daymoneyToday.amount|number-format:%.0f }}kr</span><br>
+            <small>Mottatt hittil</small>
+          </h2>
         </div>
         <span class="factContent">
           <img class="icon-moneybag" src="gfx/moneybag.svg">
@@ -43,7 +45,10 @@
       </article>
       <article id="summary-people" class="simpleFact col-xs-12 col-sm-7 col-md-5">
         <div class="fact fact-small">
-          <h2>{{ daymoneyToday.people }}</h2>
+          <h2>
+            <span>{{ daymoneyToday.people }}</span><br>
+            <small>Aktive givere</small>
+          </h2>
         </div>
         <span class="factContent"></span>
       </article>

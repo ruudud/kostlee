@@ -1,22 +1,16 @@
 var KOSTLEE_API_URL = '/daymoneys';
 
-var $br = document.createElement('br');
-
 var renderMoneySummary = function(amountOfMoney) {
   var $fact = document.getElementById('summary-money');
   $fact.textContent = amountOfMoney.toFixed(0) + 'kr';
 };
 var renderPeopleSummary = function(numberOfPeople) {
   var $container = document.getElementById('summary-people');
-  var $fact = $container.querySelector('.fact h2');
-  var $factContent = $container.querySelector('.factContent');
-  var $desc = document.createElement('small');
-  $desc.textContent = 'Aktive givere';
 
+  var $fact = $container.querySelector('.fact h2 span');
   $fact.textContent = numberOfPeople;
-  $fact.appendChild($br.cloneNode());
-  $fact.appendChild($desc);
   
+  var $factContent = $container.querySelector('.factContent');
   var $man = document.createElement('img');
   $man.src = 'gfx/man.svg';
   $man.className = 'icon-man';
