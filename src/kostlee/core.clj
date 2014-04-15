@@ -26,16 +26,11 @@
      (alter-meta! v# merge m#)
      v#))
 
-(defmacro decorate
-  "Wrap a function in one or more decorators."
-  [func & decorators]
-  `(redef ~func (-> ~func ~@decorators)))
-
 (defmacro decorate-with
   "Wrap multiple functions in a single decorator."
   [decorator & funcs]
   `(do ~@(for [f funcs]
-          `(redef ~f (~decorator ~f)))))
+          `(redef ~f (-> ~f ~decorator)))))
 
 (defn- with-header [handler header value]
   (fn [request]
@@ -51,9 +46,10 @@
 (defroutes gfx-resource-routes
   (route/resources "/gfx" { :root "public/gfx/" }))
 
-(decorate gfx-resource-routes (with-header "Cache-Control" "max-age=31536000"))
-(decorate js-vendor-resource-routes (with-header "Cache-Control" "max-age=31536000"))
-(decorate css-vendor-resource-routes (with-header "Cache-Control" "max-age=31536000"))
+(decorate-with (with-header "Cache-Control" "max-age=31536000")
+               gfx-resource-routes
+               js-vendor-resource-routes
+               css-vendor-resource-routes)
 
 (defroutes api-routes
   (GET "/" [] (resp/resource-response "index.html" {:root "public"}))

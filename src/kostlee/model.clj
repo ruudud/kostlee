@@ -5,6 +5,8 @@
             [clj-time.format :as f]
             [clj-time.core :as t]))
 
+;; The initial data is used for testing, should find a better way of
+;; bootstrapping .
 (def daymoney-state
   "Global state keeping the data"
   (atom {
