@@ -2,8 +2,17 @@
 (ns kostlee.handlers
   (:use [kostlee.uuid]
         [ring.util.response])
-  (:require [kostlee.model :as m]))
+  (:require [kostlee.model :as m]
+            [selmer.parser :as selmer]))
 
+(defn index []
+  (let [context {:per-weekday (m/daymoneys-per-weekday)
+                 :avg-perday (m/avg-daymoneys-per-day)
+                 :avg-perpeople (m/avg-daymoneys-per-people)
+                 :max-perday (m/max-daymoneys-per-day)
+                 :max-perpeople (m/max-daymoneys-per-people)
+                 :daymoneys (m/daymoneys-sorted)}]
+    (selmer/render-file "index.html" context)))
 
 (defn get-all-daymoneys [params]
   (cond

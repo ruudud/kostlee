@@ -52,7 +52,7 @@
                css-vendor-resource-routes)
 
 (defroutes api-routes
-  (GET "/" [] (resp/resource-response "index.html" {:root "public"}))
+  (GET "/" [] (handlers/index))
   (GET "/status" [] {:status 200 :body "Yey Okay"})
   (context "/daymoneys" []
     (GET "/" {params :params} (handlers/get-all-daymoneys params))

@@ -29,11 +29,12 @@
       <h2 class="page-heading">Kostlee</h2>
     </div>
   </header>
+  {% with daymoneyToday=daymoneys|last %}
   <section class="container cf">
     <div class="row">
       <article class="simpleFact col-xs-12 col-sm-5 col-md-5 col-md-offset-1">
         <div class="fact fact-small">
-          <h2><span id="summary-money"></span><br>
+          <h2><span id="summary-money">{{ daymoneyToday.amount|number-format:%.0f }}</span><br>
           <small>Mottatt hittil</small></h2>
         </div>
         <span class="factContent">
@@ -42,12 +43,13 @@
       </article>
       <article id="summary-people" class="simpleFact col-xs-12 col-sm-7 col-md-5">
         <div class="fact fact-small">
-          <h2></h2>
+          <h2>{{ daymoneyToday.people }}</h2>
         </div>
         <span class="factContent"></span>
       </article>
     </div>
   </section>
+  {% endwith %}
   <section class="container-fluid bg-clouds">
     <div class="ctaGasroot container cf">
       <div class="row">
@@ -143,6 +145,22 @@
   <script src="js/vendor/promise-0.1.1.min.js"></script>
   <script src="js/xhr_utils.js"></script>
 
+  <script>
+var LEE = {
+  data: {
+    daymoneys: {{ daymoneys|json|safe }},
+    perWeekday: {{ per-weekday|json|safe }},
+    avg: {
+      perDay: {{ avg-perday|json|safe }},
+      perPeople: {{ avg-perpeople|json|safe }}
+    },
+    max: {
+      perDay: {{ max-perday|json|safe }},
+      perPeople: {{ max-perpeople|json|safe }}
+    }
+  }
+};
+  </script>
   <script src="js/kostlee.js"></script>
 </body>
 

@@ -99,21 +99,30 @@ var errorHandler = function(error) {
   console.error("Error when graphing data", error);
 };
 
-xhr.getJSON(KOSTLEE_API_URL)
+var getLocalOrJSON = function(key, url) {
+  if (LEE && LEE.data && LEE.data[key] !== undefined) {
+    return new Promise(function(resolve) {
+      resolve(LEE.data[key]);
+    });
+  }
+  return xhr.getJSON(url);
+};
+
+getLocalOrJSON('daymoneys', KOSTLEE_API_URL)
    .then(formatData)
    .then(renderSummary)
    .then(graphHistoricData)
    .catch(errorHandler);
 
-xhr.getJSON(KOSTLEE_API_URL + '?transform=per-weekday')
+getLocalOrJSON('perWeekday', KOSTLEE_API_URL + '?transform=per-weekday')
    .then(formatWeekdayData)
    .then(graphWeekdays)
    .catch(errorHandler);
 
-xhr.getJSON(KOSTLEE_API_URL + '?transform=avg')
+getLocalOrJSON('avg', KOSTLEE_API_URL + '?transform=avg')
    .then(graphAvg)
    .catch(errorHandler);
    
-xhr.getJSON(KOSTLEE_API_URL + '?transform=max')
+getLocalOrJSON('max', KOSTLEE_API_URL + '?transform=max')
    .then(graphMax)
    .catch(errorHandler);
