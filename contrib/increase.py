@@ -19,7 +19,15 @@ def main():
         this_date = dateutil.parser.parse(row[0]).date()
         prev_date = dateutil.parser.parse(prev[0]).date()
         if (prev_date + aday) == this_date:
-            increase = Decimal(row[1]) - Decimal(prev[1])
+            prev_amount = Decimal(prev[1])
+            this_amount = Decimal(row[1])
+
+            # Ugh.. Handle tertial shift in the most simple case
+            if (this_amount < prev_amount):
+                row[1] = this_amount + prev_amount
+                this_amount = Decimal(row[1])
+
+            increase = this_amount - prev_amount
             prev.append(increase)
         else:
             prev.append(Decimal(0))
