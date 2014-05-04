@@ -10,6 +10,7 @@ def main():
     ifp = open('/srv/leemoney.dat', 'rb')
     aday = datetime.timedelta(days=1)
     reader = csv.reader(ifp)
+    last_tertial_sum = 0
     for row in reader:
         data.append(row)
         if len(data) == 1:
@@ -24,7 +25,9 @@ def main():
 
             # Ugh.. Handle tertial shift in the most simple case
             if (this_amount < prev_amount):
-                row[1] = this_amount + prev_amount
+                if last_tertial_sum == 0:
+                    last_tertial_sum = prev_amount
+                row[1] = this_amount + last_tertial_sum
                 this_amount = Decimal(row[1])
 
             increase = this_amount - prev_amount
