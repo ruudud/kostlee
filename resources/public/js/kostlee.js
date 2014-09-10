@@ -14,7 +14,7 @@ var renderPeopleSummary = function(numberOfPeople) {
   var $man = document.createElement('img');
   $man.src = 'gfx/man.svg';
   $man.className = 'icon-man';
-  for (var i = 0; i < 25 && i < numberOfPeople; i++) {
+  for (var i = 0; i < 24 && i < numberOfPeople; i++) {
     $factContent.appendChild($man.cloneNode());
   }
 };
