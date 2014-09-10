@@ -5,49 +5,65 @@ import dateutil.parser
 import datetime
 from decimal import Decimal
 
-def main():
-    data = []
-    ifp = open('/srv/leemoney.dat', 'rb')
-    aday = datetime.timedelta(days=1)
-    reader = csv.reader(ifp)
-    last_tertial_sum = 0
-    for row in reader:
-        data.append(row)
-        if len(data) == 1:
-            continue
+def isTertialShift(previous, current):
+    return current < previous
 
-        prev = data[-2]
-        this_date = dateutil.parser.parse(row[0]).date()
-        prev_date = dateutil.parser.parse(prev[0]).date()
-        if (prev_date + aday) == this_date:
-            prev_amount = Decimal(prev[1])
-            this_amount = Decimal(row[1])
-
-            # Ugh.. Handle tertial shift in the most simple case
-            if (this_amount < prev_amount):
-                if last_tertial_sum == 0:
-                    last_tertial_sum = prev_amount
-                row[1] = this_amount + last_tertial_sum
-                this_amount = Decimal(row[1])
-
-            increase = this_amount - prev_amount
-            prev.append(increase)
-        else:
-            prev.append(Decimal(0))
-
-    if not len(data) > 0:
-      return
-
-    data[-1].append(Decimal(0))
-
-    ofp = open('/srv/leemoney.csv', 'wb')
-    writer = csv.writer(ofp, delimiter=',', quotechar='"',
+def writeCSV(path, data):
+    fp = open(path, 'wb')
+    writer = csv.writer(fp, delimiter=',', quotechar='"',
                         quoting=csv.QUOTE_ALL)
     for row in data:
         writer.writerow(row)
+    fp.close()
 
-    ifp.close()
-    ofp.close()
+def parseDate(datestr):
+    return dateutil.parser.parse(datestr).date()
+
+def isDatesSequential(before, after):
+    one_day = datetime.timedelta(days=1)
+    return (before + one_day) == after
+
+def main(inputfile, outputfile):
+    outputdata = []
+    fp_reader = open(inputfile, 'rb')
+    reader = csv.reader(fp_reader)
+
+    last_tertial_sum = 0
+    prev_input_amount = 0
+
+    for original in reader:
+        this_row = original[:]
+        outputdata.append(this_row)
+
+        if len(outputdata) == 1:
+            continue
+
+        prev_row = outputdata[-2]
+        prev_increase = Decimal(0)
+
+        this_date = parseDate(this_row[0])
+        prev_date = parseDate(prev_row[0])
+
+        if isDatesSequential(prev_date, this_date):
+            prev_sum = Decimal(prev_row[1])
+            this_amount = Decimal(this_row[1])
+
+            if (isTertialShift(prev_input_amount, this_amount)):
+                last_tertial_sum += prev_input_amount
+
+            this_row[1] = this_amount + last_tertial_sum
+            prev_increase = (this_amount + last_tertial_sum) - prev_sum
+
+        prev_row.append(prev_increase)
+        prev_input_amount = Decimal(original[1])
+
+
+    if not len(outputdata) > 0:
+      return
+
+    outputdata[-1].append(Decimal(0))
+    fp_reader.close()
+    writeCSV(outputfile, outputdata)
 
 if __name__ == '__main__':
-    main()
+    main('/srv/leemoney.dat', '/srv/leemoney.csv')
